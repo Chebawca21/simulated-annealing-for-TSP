@@ -1,8 +1,8 @@
 import numpy as np
 
 class SimulatedAnnealing:
-    def __init__(self, K=2000000, t0=0.3, tMin=0.19, alpha=0.9999995):
-        self.fileName = "FHCPCS/graph1.hcp"
+    def __init__(self, K=2000000, t0=0.3, tMin=0.19, alpha=0.9999995, fileName="FHCPCS/graph1.hcp"):
+        self.fileName = fileName
         self.t0 = t0
         self.t = self.t0
         self.K = K

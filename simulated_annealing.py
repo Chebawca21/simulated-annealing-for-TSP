@@ -1,7 +1,7 @@
 import numpy as np
 
 class SimulatedAnnealing:
-    def __init__(self, K=2000000, t0=0.3, tMin=0.19, alpha=0.9999995, fileName="FHCPCS/graph1.hcp"):
+    def __init__(self, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, fileName="FHCPCS/graph1.hcp"):
         self.fileName = fileName
         self.t0 = t0
         self.t = self.t0
@@ -33,11 +33,35 @@ class SimulatedAnnealing:
         self.bestRoute = np.empty((self.dim, 1))
         self.bestScore = self.dim * 4
 
-    def neighbour(self, s):
+    def inverse(self, s, i, j):
         copy = s.copy()
+        a = max(i, j)
+        b = min(i, j)
+        diff = a - b + 1
+        for k in range(diff):
+            copy[b + k] = s[a - k]
+        return copy
+    
+    def insert(self, s, i, j):
+        copy = s.copy()
+        a = max(i, j)
+        b = min(i, j)
+        diff = a - b + 1
+        copy[b] = s[a]
+        for k in range(1, diff):
+            copy[b + k] = s[b + k - 1]
+        return copy
+
+    def swap(self, s, i, j):
+        copy = s.copy()
+        copy[i], copy[j] = copy[j], copy[i]
+        return copy
+
+    def neighbour(self, s):
         i = np.random.randint(self.dim)
         j = np.random.randint(self.dim)
-        copy[i], copy[j] = copy[j], copy[i]
+        candidates = (self.inverse(s, i, j), self.insert(s, i, j), self.swap(s, i, j))
+        copy = min(candidates, key=lambda x: self.evalute(x))
         return copy
 
     def temperature(self):

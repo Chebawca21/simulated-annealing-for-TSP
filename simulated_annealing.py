@@ -1,7 +1,8 @@
 import numpy as np
+from draw import Draw
 
 class SimulatedAnnealing:
-    def __init__(self, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, fileName="FHCPCS/graph1.hcp"):
+    def __init__(self, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, fileName="FHCPCS/graph1.hcp", draw=True):
         self.fileName = fileName
         self.t0 = t0
         self.t = self.t0
@@ -32,6 +33,9 @@ class SimulatedAnnealing:
 
         self.bestRoute = np.empty((self.dim, 1))
         self.bestScore = self.dim * 4
+
+        self.draw = draw
+        self.d = Draw(self.adjencyMatrix, nodeSize=30)
 
     def inverse(self, s, i, j):
         copy = s.copy()
@@ -87,6 +91,8 @@ class SimulatedAnnealing:
         for k in range(self.K):
             if k % (self.K/100) == 0:
                 print(self.evalute(s), self.t)
+                if self.draw:
+                    self.d.draw(s)
 
             newS = self.neighbour(s)
             # print(self.evalute(s), self.evalute(newS), self.t)
@@ -98,4 +104,8 @@ class SimulatedAnnealing:
                     print(self.bestScore, self.t)
                 s = newS.copy()
         
+
+        if self.draw:
+            self.d.stop()
+            self.d.draw(self.bestRoute)
         return self.bestRoute, self.bestScore

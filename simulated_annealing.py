@@ -1,9 +1,11 @@
 import numpy as np
 from draw import Draw
+import time
 
 class SimulatedAnnealing:
-    def __init__(self, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, fileName="FHCPCS/graph1.hcp", draw=True):
+    def __init__(self, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, fileName="FHCPCS/graph1.hcp", solFileName="FHCPCS_sols/graph1.hcp.tou", draw=True):
         self.fileName = fileName
+        self.solFileName = solFileName
         self.t0 = t0
         self.t = self.t0
         self.K = K
@@ -31,11 +33,29 @@ class SimulatedAnnealing:
         
         f.close()
 
-        self.bestRoute = np.empty((self.dim, 1))
-        self.bestScore = self.dim * 4
+        f = open(self.solFileName, 'r')
+
+        _ = f.readline()
+        _ = f.readline()
+        _ = f.readline()
+        _ = f.readline()
+
+        _ = f.readline()
+        line = f.readline().strip()
+        route = []
+        while line != "-1":
+            route.append(int(line) - 1)
+            line = f.readline().strip()
+        
+        f.close()
 
         self.draw = draw
-        self.d = Draw(self.adjencyMatrix, nodeSize=30)
+        self.d = Draw(route, nodeSize=30)
+        self.d.draw(route)
+        time.sleep(5)
+
+        self.bestRoute = np.empty((self.dim, 1))
+        self.bestScore = self.dim * 4
 
     def inverse(self, s, i, j):
         copy = s.copy()
@@ -91,8 +111,6 @@ class SimulatedAnnealing:
         for k in range(self.K):
             if k % (self.K/100) == 0:
                 print(self.evalute(s), self.t)
-                if self.draw:
-                    self.d.draw(s)
 
             newS = self.neighbour(s)
             # print(self.evalute(s), self.evalute(newS), self.t)
@@ -101,7 +119,9 @@ class SimulatedAnnealing:
                 if self.evalute(s) < self.bestScore:
                     self.bestRoute = s.copy()
                     self.bestScore = self.evalute(self.bestRoute)
-                    print(self.bestScore, self.t)
+                    print("New Best: ", self.bestScore, self.t)
+                    if self.draw:
+                        self.d.draw(s)
                 s = newS.copy()
         
 

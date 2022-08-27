@@ -3,7 +3,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 class Draw:
-    def __init__(self, adjencyMatrix, nodeSize=300):
+    def __init__(self, route, nodeSize=300):
+        adjencyMatrix = self.routeToMatrix(route)
         G = nx.from_numpy_matrix(adjencyMatrix)
         self.pos = nx.spring_layout(G)
         self.nodeSize = nodeSize

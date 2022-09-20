@@ -14,7 +14,6 @@ def kmeans(k, adjencyMatrix, maxN=100):
     while not np.array_equal(centroids, newCentroids):
         centroids = newCentroids.copy()
         newCentroids = np.full_like(centroids, -1)
-        print(centroids)
 
         # assigning points to correct clusters
         clusters = np.empty((k, 1)).tolist()
@@ -24,19 +23,21 @@ def kmeans(k, adjencyMatrix, maxN=100):
         for point in range(dim):
             if not np.isin(point, centroids):
                 minDistance = float('inf')
-                minCentroid = -1
+                minCentroids = []
                 for centroid in centroids:
                     if adjencyMatrix[centroid][point] < minDistance:
                         minDistance = adjencyMatrix[centroid][point]
-                        minCentroid = centroid
-                index = np.where(centroids == minCentroid)[0][0]
+                        minCentroids = [centroid]
+                    elif adjencyMatrix[centroid][point] == minDistance:
+                        minCentroids.append(centroid)
+                index = np.where(centroids == np.random.choice(minCentroids))[0][0]
                 clusters[index].append(point)
         
         # recalculating centroids
         n = 0
         for cluster in clusters:
             minSumDistances = float('inf')
-            minPoint = -1
+            minPoints = []
             for point in cluster:
                 sumDistances = 0
                 for i in range(dim):
@@ -45,12 +46,14 @@ def kmeans(k, adjencyMatrix, maxN=100):
 
                 if sumDistances < minSumDistances:
                     minSumDistances = sumDistances
-                    minPoint = point
+                    minPoints = [point]
+                elif sumDistances == minSumDistances:
+                    minPoints.append(point)
             
-            if minPoint == -1:
+            if len(minPoints) == 0:
                 newCentroids[n] = centroids[n]
             else:
-                newCentroids[n] = minPoint
+                newCentroids[n] = np.random.choice(minPoints)
             
             n = n + 1
         
@@ -60,4 +63,4 @@ def kmeans(k, adjencyMatrix, maxN=100):
 
     return clusters
 
-print(kmeans(15, sa.adjencyMatrix))
+print(kmeans(3, sa.adjencyMatrix))

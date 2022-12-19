@@ -30,6 +30,9 @@ class SimulatedAnnealing:
                 self.adjencyMatrix[x - 1][y - 1] = 1
                 self.adjencyMatrix[y - 1][x - 1] = 1
                 line = f.readline().strip()
+
+        for i in range(self.dim):
+            self.adjencyMatrix[i][i] = 0
         
         f.close()
 
@@ -50,9 +53,8 @@ class SimulatedAnnealing:
         f.close()
 
         self.draw = draw
-        self.d = Draw(route, nodeSize=30)
-        self.d.draw(route)
-        time.sleep(5)
+        self.d = Draw(self.adjencyMatrix, route, nodeSize=30)
+        # time.sleep(1)
 
         self.bestRoute = np.empty((self.dim, 1))
         self.bestScore = self.dim * 4

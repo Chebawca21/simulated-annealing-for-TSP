@@ -1,14 +1,29 @@
 import numpy as np
 import networkx as nx
+from sklearn.manifold import MDS
 import matplotlib.pyplot as plt
 
 class Draw:
-    def __init__(self, route, nodeSize=300):
-        adjencyMatrix = self.routeToMatrix(route)
-        G = nx.from_numpy_matrix(adjencyMatrix)
-        self.pos = nx.spring_layout(G)
+    def __init__(self, adjencyMatrix, route, nodeSize=300):
         self.nodeSize = nodeSize
+
+        # Transforming adjency matrix to coordinates
+        model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
+        nodes = model.fit_transform(adjencyMatrix)
+        G = nx.Graph()
+        i = 0
+        for node in nodes:
+            G.add_node(i, pos=(node[0], node[1]))
+            i += 1
+        self.pos = nx.get_node_attributes(G, 'pos')
+
+        # Plotting solution as a seperate figure
         plt.ion()
+        self.fig = plt.figure()
+        G = nx.from_numpy_matrix(self.routeToMatrix(route))
+        nx.draw(G, pos=self.pos, node_size=self.nodeSize)
+        plt.show()
+
         self.fig = plt.figure()
 
     def routeToMatrix(self, route):

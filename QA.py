@@ -1,3 +1,13 @@
+"""
+This file is a lightly modified version of file from the
+GPS: A new TSP formulation for its generalizations type QUBO article.
+
+Original file can be found in this repository:
+https://github.com/pifparfait/GPS
+
+Author: Parfait Atchadé
+"""
+
 # https://arxiv.org/abs/2110.12158v3
 
 import dimod
@@ -9,7 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from time import time
 
-N = 30
+N = 7
 
 M=N+1 # Number of points
 
@@ -74,7 +84,7 @@ print("The order by nearest neighbors is ", ord_vc)
 print("Length of the path", dist_vc)
 
 modelo = 2 ## Poner 0 para SA, 1 para simulated QA, 2 para real QA
-n_samples = 1000 # número de veces que ejecutamos el sistema
+n_samples = 4000 # número de veces que ejecutamos el sistema
 
 stm2 = time()
 
@@ -193,6 +203,11 @@ if modelo == 1:
 if modelo == 2:
     sampler = dwave.system.EmbeddingComposite(dwave.system.DWaveSampler())
     sampleset = sampler.sample_qubo(dwave_dic,num_reads = n_samples)
+    solution = sampleset.first.sample
+
+if modelo == 3:
+    sampler = dwave.system.LeapHybridBQMSampler()
+    sampleset = sampler.sample_qubo(dwave_dic)
     solution = sampleset.first.sample
 
 print()

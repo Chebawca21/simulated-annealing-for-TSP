@@ -1,6 +1,6 @@
 from sklearn.manifold import MDS
 from math import sqrt
-from simulated_annealing import SimulatedAnnealing
+from data_loader import DataLoader
 
 
 def distance(p1, p2):
@@ -9,16 +9,17 @@ def distance(p1, p2):
 
 
 if __name__ == '__main__':
-    sa = SimulatedAnnealing()
+    dl = DataLoader("data/FHCPCS/graph1.hcp", "data/FHCPCS_sols/graph1.hcp.tou")
+    am = dl.getAdjencyMatrix()
 
     model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
-    nodes = model.fit_transform(sa.adjencyMatrix)
+    nodes = model.fit_transform(am)
 
     for j in range(66):
         max1 = 0
         min2 = 10
         for i in range(66):
-            a = sa.adjencyMatrix[j][i]
+            a = am[j][i]
             b = distance(nodes[j], nodes[i])
             if a == 1 and b > max1:
                 max1 = b

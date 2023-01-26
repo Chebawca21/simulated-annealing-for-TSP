@@ -83,7 +83,7 @@ print("The time taken has been ",elapsed_time,"seconds.")
 print("The order by nearest neighbors is ", ord_vc)
 print("Length of the path", dist_vc)
 
-modelo = 2 ## Poner 0 para SA, 1 para simulated QA, 2 para real QA
+modelo = 1 ## Poner 0 para SA, 1 para simulated QA, 2 para real QA
 n_samples = 4000 # número de veces que ejecutamos el sistema
 
 stm2 = time()

@@ -1,117 +1,78 @@
 import numpy as np
 from draw import Draw
 import time
+import operations
+
 
 class SimulatedAnnealing:
-    def __init__(self, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, fileName="FHCPCS/graph1.hcp", solFileName="FHCPCS_sols/graph1.hcp.tou", draw=True):
-        self.fileName = fileName
-        self.solFileName = solFileName
+    def __init__(self, adjencyMatrix, route, dim, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, draw=True, print=True):
+        self.adjencyMatrix = adjencyMatrix
+        self.route = route
+        self.dim = dim
+
         self.t0 = t0
         self.t = self.t0
         self.K = K
         self.tMin = tMin
         self.alpha = alpha
-    
-        f = open(self.fileName, 'r')
-        self.name = f.readline().strip().split(maxsplit=2)[2]
-        self.comment = f.readline().strip().split(maxsplit=2)[2]
-        self.type = f.readline().strip().split(maxsplit=2)[2]
-        self.dim = f.readline().strip().split(maxsplit=2)[2]
-        self.dim = int(self.dim)
-
-        if self.type == "HCP":
-            self.adjencyMatrix = np.full((self.dim, self.dim), 2)
-            self.format = f.readline().strip().split(maxsplit=2)[2]
-            _ = f.readline()
-            line = f.readline().strip()
-            while line != "-1":
-                x, y = line.split()
-                x, y = int(x), int(y)
-                self.adjencyMatrix[x - 1][y - 1] = 1
-                self.adjencyMatrix[y - 1][x - 1] = 1
-                line = f.readline().strip()
-
-        for i in range(self.dim):
-            self.adjencyMatrix[i][i] = 0
-        
-        f.close()
-
-        f = open(self.solFileName, 'r')
-
-        _ = f.readline()
-        _ = f.readline()
-        _ = f.readline()
-        _ = f.readline()
-
-        _ = f.readline()
-        line = f.readline().strip()
-        route = []
-        while line != "-1":
-            route.append(int(line) - 1)
-            line = f.readline().strip()
-        
-        f.close()
 
         self.draw = draw
-        self.d = Draw(self.adjencyMatrix, route, nodeSize=30)
+        if self.draw:
+            self.d = Draw(self.adjencyMatrix, self.route, nodeSize=30)
         # time.sleep(1)
+
+        self.print = print
 
         self.bestRoute = np.empty((self.dim, 1))
         self.bestScore = self.dim * 4
 
-    def inverse(self, s, i, j):
-        copy = s.copy()
-        a = max(i, j)
-        b = min(i, j)
-        diff = a - b + 1
-        for k in range(diff):
-            copy[b + k] = s[a - k]
-        return copy
-    
-    def insert(self, s, i, j):
-        copy = s.copy()
-        a = max(i, j)
-        b = min(i, j)
-        diff = a - b + 1
-        copy[b] = s[a]
-        for k in range(1, diff):
-            copy[b + k] = s[b + k - 1]
-        return copy
-
-    def swap(self, s, i, j):
-        copy = s.copy()
-        copy[i], copy[j] = copy[j], copy[i]
-        return copy
-
     def neighbour(self, s):
+        '''
+        Returns random neighbour from the neighbourhood of s.
+        '''
         i = np.random.randint(self.dim)
         j = np.random.randint(self.dim)
-        candidates = (self.inverse(s, i, j), self.insert(s, i, j), self.swap(s, i, j))
+        candidates = (operations.inverse(s, i, j), operations.insert(s, i, j), operations.swap(s, i, j))
         copy = min(candidates, key=lambda x: self.evalute(x))
         return copy
 
-    def temperature(self):
-        if self.t <= self.tMin:
-            self.t = self.tMin
-        else:
-            self.t = self.t * self.alpha
-
     def evalute(self, s):
+        '''
+        Returns distance of the solution s.
+        '''
         score = 0
         for i in range(self.dim):
             score = score + self.adjencyMatrix[s[i]][s[(i+1) % self.dim]]
         return score
 
+    def temperature(self):
+        '''
+        Update temperature parameter
+        '''
+        if self.t <= self.tMin:
+            self.t = self.tMin
+        else:
+            self.t = self.t * self.alpha
+
     def probability(self, s1, s2):
+        '''
+        Calculate probability for current state s1 and new state s2.
+        '''
         if s2 <= s1:
             return 1
         else:
             return np.exp(-(s2 - s1)/self.t)
-    
+
     def anneal(self):
+        '''
+        Main anneal function.\n
+        Starting from random point with class parameters.\n
+        Returns best route, distance of this route and elapsed time.
+        '''
+        st = time.time()
         s = np.random.choice(self.dim, self.dim, replace=False)
         for k in range(self.K):
-            if k % (self.K/100) == 0:
+            if k % (self.K/100) == 0 and self.print:
                 print(self.evalute(s), self.t)
 
             newS = self.neighbour(s)
@@ -121,13 +82,17 @@ class SimulatedAnnealing:
                 if self.evalute(s) < self.bestScore:
                     self.bestRoute = s.copy()
                     self.bestScore = self.evalute(self.bestRoute)
-                    print("New Best: ", self.bestScore, self.t)
+                    if self.print:
+                        print("New Best: ", self.bestScore, self.t)
                     if self.draw:
                         self.d.draw(s)
                 s = newS.copy()
-        
 
         if self.draw:
             self.d.stop()
             self.d.draw(self.bestRoute)
-        return self.bestRoute, self.bestScore
+
+        et = time.time()
+        elapsed = et - st
+
+        return self.bestRoute, self.bestScore, elapsed

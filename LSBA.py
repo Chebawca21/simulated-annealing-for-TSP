@@ -1,120 +1,68 @@
 import numpy as np
+import operations
+
 
 class LSBA:
-    def __init__(self):
-        self.fileName = "FHCPCS/graph1.hcp"
-    
-        f = open(self.fileName, 'r')
-        self.name = f.readline().strip().split(maxsplit=2)[2]
-        self.comment = f.readline().strip().split(maxsplit=2)[2]
-        self.type = f.readline().strip().split(maxsplit=2)[2]
-        self.dim = f.readline().strip().split(maxsplit=2)[2]
-        self.dim = int(self.dim)
+    def __init__(self, adjencyMatrix, route, dim, K=200000, p0=0.4, Lmax=40, M=120, print=True):
+        self.adjencyMatrix = adjencyMatrix
+        self.route = route
+        self.dim = dim
 
-        if self.type == "HCP":
-            self.adjencyMatrix = np.full((self.dim, self.dim), 2)
-            self.format = f.readline().strip().split(maxsplit=2)[2]
-            _ = f.readline()
-            line = f.readline().strip()
-            while line != "-1":
-                x, y = line.split()
-                x, y = int(x), int(y)
-                self.adjencyMatrix[x - 1][y - 1] = 1
-                self.adjencyMatrix[y - 1][x - 1] = 1
-                line = f.readline().strip()
-        
-        f.close()
+        self.M = M
+        self.K = K
+        self.p0 = p0
+        self.Lmax = Lmax
+        self.L = self.initTemp()
+
+        self.print = print
 
         self.bestRoute = np.empty((self.dim, 1))
         self.bestScore = self.dim * 4
-        self.L = self.initTemp(40, 0.4)
-        self.M = 120
-        self.K = 10000
 
-    def initTemp(self, Lmax, p0):
+    def initTemp(self):
+        '''
+        Initialize temperature list.
+        '''
         L = []
         s = np.random.choice(self.dim, self.dim, replace=False)
         i = 0
-        while i < Lmax:
+        while i < self.Lmax:
             newS = self.neighbour(s)
             evNewS = self.evalute(newS)
             evS = self.evalute(s)
             if evNewS < evS:
                 s = newS.copy()
-            L.append(-abs(evNewS - evS) / np.log(p0)+ 0.1)
+            L.append(-abs(evNewS - evS) / np.log(self.p0) + 0.1)
             i += 1
         return L
 
-
-    def inverse(self, s, i, j):
-        copy = s.copy()
-        a = max(i, j)
-        b = min(i, j)
-        diff = a - b + 1
-        for k in range(diff):
-            copy[b + k] = s[a - k]
-        return copy
-    
-    def insert(self, s, i, j):
-        copy = s.copy()
-        a = max(i, j)
-        b = min(i, j)
-        diff = a - b + 1
-        copy[b] = s[a]
-        for k in range(1, diff):
-            copy[b + k] = s[b + k - 1]
-        return copy
-
-    def swap(self, s, i, j):
-        copy = s.copy()
-        copy[i], copy[j] = copy[j], copy[i]
-        return copy
-
     def neighbour(self, s):
+        '''
+        Returns random neighbour from the neighbourhood of s.
+        '''
         i = np.random.randint(self.dim)
         j = np.random.randint(self.dim)
-        candidates = (self.inverse(s, i, j), self.insert(s, i, j), self.swap(s, i, j))
+        candidates = (operations.inverse(s, i, j), operations.insert(s, i, j), operations.swap(s, i, j))
         copy = min(candidates, key=lambda x: self.evalute(x))
         return copy
 
-    def temperature(self):
-        if self.t <= 0.16:
-            self.t = 0.16
-        else:
-            self.t = self.t * 0.999995
-
     def evalute(self, s):
+        '''
+        Returns distance of the solution s.
+        '''
         score = 0
         for i in range(self.dim):
             score = score + self.adjencyMatrix[s[i]][s[(i+1) % self.dim]]
         return score
 
     def probability(self, s1, s2):
+        '''
+        Calculate probability for current state s1 and new state s2.
+        '''
         if s2 <= s1:
             return 1
         else:
             return np.exp(-(s2 - s1)/self.t)
-
-    def nearestNeighbour(self):
-        curr = np.random.randint(self.dim)
-        a = []
-        unvisited = [i for i in range(self.dim)]
-        unvisited.remove(curr)
-        a.append(curr)
-        while unvisited:
-            new = min(unvisited, key=lambda k: self.adjencyMatrix[k][curr])
-            unvisited.remove(new)
-            a.append(new)
-            curr = new
-        
-        return np.array(a)
-
-# s = nearestNeighbour()
-
-# bestRoute = s.copy()
-# bestScore = evalute(bestRoute)
-# print(bestRoute)
-# t = temp
 
     def anneal(self):
         s = np.random.choice(self.dim, self.dim, replace=False)
@@ -123,8 +71,8 @@ class LSBA:
             t = 0
             c = 0
 
-            if k % 100 == 0:
-                print(self.evalute(s), tMax)
+            if k % (self.K/100) == 0 and self.print:
+                print(self.evalute(s), self.t)
 
             for m in range(self.M):
                 newS = self.neighbour(s)
@@ -132,7 +80,8 @@ class LSBA:
                     if self.evalute(s) < self.bestScore:
                         self.bestRoute = s.copy()
                         self.bestScore = self.evalute(self.bestRoute)
-                        print(self.bestScore, tMax)
+                        if self.print:
+                            print("New Best: ", self.bestScore, self.t)
                     s = newS.copy()
                 else:
                     r = np.random.rand()
@@ -142,12 +91,7 @@ class LSBA:
                         s = newS.copy()
 
             if c != 0:
-                if(t == 0):
-                    print(tMax, t, c)
                 self.L.remove(tMax)
                 self.L.append(t/c)
 
         return self.bestRoute, self.bestScore
-
-# print(bestRoute)
-# print(evalute(bestRoute))

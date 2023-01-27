@@ -10,7 +10,6 @@ Author: Parfait Atchadé
 
 # https://arxiv.org/abs/2110.12158v3
 
-import dimod
 import dwave.inspector
 import qubovert
 import dwave.system

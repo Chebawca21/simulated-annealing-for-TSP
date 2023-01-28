@@ -38,16 +38,10 @@ Parametry algorytmu symulowanego wyżarzania są podawana poprzez zmienne przy t
 
 # Testy jednostkowe
 
-Uruchomienie testów jednostkowych dla wszystkich operacji modyfikujących rozwiązanie problemu komiwojażera.
+Uruchomienie wszystkich testów jednostkowych
 
 ```
-$ python src/test_operations.py
-```
-
-Uruchomienie testów jednostkowych dla klasy DataLoader.
-
-```
-$ python src/test_data_loader.py
+$ python src/unit_tests.py
 ```
 
 # Kwantowe wyżarzanie

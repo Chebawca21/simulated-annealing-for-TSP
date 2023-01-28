@@ -5,7 +5,26 @@ import operations
 
 
 class SimulatedAnnealing:
+    '''
+    Class used to execute simulated annealing algorithm for traveling
+    salesman problem.
+    '''
     def __init__(self, adjencyMatrix, route, dim, K=200000, t0=0.3, tMin=0.16, alpha=0.999995, draw=True, print=True):
+        '''
+        Initialize SimulatedAnnealing class. \n
+            Parameters:
+                adjencyMatrix: two dimensional array containg distances between nodes
+                route: one dimensional array containg order in which nodes should be visited
+                dim (int): dimension of the graph
+                K (int): maximum number of iterations for anneal()
+                t0 (float): maximum temperature value
+                tMin (float): minimum temperature value
+                alpha (float): value used to update temperature
+                draw (bool): if True it will draw optimal and current best solution
+                print (bool): if True it will log current best solution and corresponding temperature
+
+        Draws optimal solution if draw is set to True and initializes values for bestRoute and bestScore.
+        '''
         self.adjencyMatrix = adjencyMatrix
         self.route = route
         self.dim = dim

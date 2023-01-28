@@ -5,7 +5,25 @@ import matplotlib.pyplot as plt
 
 
 class Draw:
+    '''
+    Class to draw two figures.\n
+    First one is the optimal route.
+    Second is drawn with draw() function and can be updated during the
+    execution of the program. After all the updates stop interactive mode
+    with stop() function.
+    '''
     def __init__(self, adjencyMatrix, route, nodeSize=300):
+        '''
+        Initialize Draw class. \n
+            Parameters:
+                adjencyMatrix: two dimensional array containg distances between nodes
+                route: one dimensional array containg order in which nodes should be visited
+                nodeSize (int): nodeSize for nx.draw() function
+
+        Takes adjency matrix to establish node positions, route to draw the
+        optimal route and node size (it needs to be smaller the more nodes
+        graph has).
+        '''
         self.nodeSize = nodeSize
 
         # Transforming adjency matrix to coordinates

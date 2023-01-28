@@ -1,3 +1,8 @@
+'''
+Run simulated annealing for the graphs specified in
+conf_train_multiple.json file.
+'''
+
 from simulated_annealing import SimulatedAnnealing
 from data_loader import DataLoader
 

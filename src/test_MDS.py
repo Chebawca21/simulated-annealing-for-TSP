@@ -1,9 +1,17 @@
+'''
+Test accuracy of the MDS algorithm on the graph specified in
+conf_train.json file.
+'''
+
 from sklearn.manifold import MDS
 from math import sqrt
 from data_loader import DataLoader
 
 
 def distance(p1, p2):
+    '''
+    Calculate euclidean distance between p1 and p2.
+    '''
     r = (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2
     return sqrt(r)
 

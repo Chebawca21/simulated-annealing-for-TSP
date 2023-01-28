@@ -1,3 +1,8 @@
+'''
+File containg operations for generating neighbours of the path s.
+'''
+
+
 def insert(s, i, j):
     '''
     Insert operation for solution s and indexes i and j.

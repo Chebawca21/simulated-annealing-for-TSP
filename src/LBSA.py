@@ -2,8 +2,26 @@ import numpy as np
 import operations
 
 
-class LSBA:
+class LBSA:
+    '''
+    Class used to execute list-based simulated annealing algorithm for
+    traveling salesman problem.
+    '''
     def __init__(self, adjencyMatrix, route, dim, K=200000, p0=0.4, Lmax=40, M=120, print=True):
+        '''
+        Initialize LBSA class. \n
+            Parameters:
+                adjencyMatrix: two dimensional array containg distances between nodes
+                route: one dimensional array containg order in which nodes should be visited
+                dim (int): dimension of the graph
+                K (int): maximum number of iterations for anneal()
+                p0 (float): initial acceptance rate
+                Lmax (int): length of temperature list
+                M (int): how many times one temperature can be used
+                print (bool): if True it will log current best solution and corresponding temperature
+
+        Initializes temperature list and values for bestRoute and bestScore.
+        '''
         self.adjencyMatrix = adjencyMatrix
         self.route = route
         self.dim = dim
@@ -65,6 +83,11 @@ class LSBA:
             return np.exp(-(s2 - s1)/self.t)
 
     def anneal(self):
+        '''
+        Main anneal function.\n
+        Starting from random point with class parameters.\n
+        Returns best route and distance of this route.
+        '''
         s = np.random.choice(self.dim, self.dim, replace=False)
         for k in range(self.K):
             tMax = max(self.L)

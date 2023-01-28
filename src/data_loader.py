@@ -2,7 +2,18 @@ import numpy as np
 
 
 class DataLoader:
+    '''
+    Class to load data from files in HCP format.
+    '''
     def __init__(self,  fileName, solFileName):
+        '''
+        Initialize  class. \n
+            Parameters:
+                fileName: file containg the graph in HCP fromat
+                solFileName: file containg a route in HCP format
+        
+        Loads the graph route and dimensions from both files.
+        '''
         self.fileName = fileName
         self.solFileName = solFileName
 

@@ -1,3 +1,11 @@
+'''
+Draws 5 different graphs:
+undirected,
+with restricted degree,
+directed,
+sample graph from FHCP before and after filling.
+'''
+
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -49,7 +57,7 @@ if __name__ == '__main__':
     nx.draw_networkx_edge_labels(G2, pos, edgeWeights)
     plt.show()
 
-    # Drawing asymetric graph
+    # Drawing directed graph
     G3 = nx.MultiDiGraph()
     G3.add_edge("F", "G", color='b')
     G3.add_edge("G", "F", color='b')

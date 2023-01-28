@@ -1,7 +1,7 @@
 # simulated-annealing-for-TSP
 
 # Instalacja
-Zainstalowanie potrzebnych pakietów
+Zainstalowanie potrzebnych pakietów.
 
 ```
 $ pip install -r requirements.txt
@@ -11,7 +11,7 @@ $ pip install -r requirements.txt
 Wszystkie programy powinny być uruchamiane z głównego folderu projektu.
 <br><br>
 
-Uruchomienie pojedynczego algorytmu symulowanego wyżarzania
+Uruchomienie pojedynczego algorytmu symulowanego wyżarzania.
 
 ```
 $ python src/train.py
@@ -19,7 +19,7 @@ $ python src/train.py
 
 <br>
 
-Uruchomienie testu sprawdzającego dokładność algorytmu MDS przekształcającego macierz odległości na listę współrzędnych
+Uruchomienie testu sprawdzającego dokładność algorytmu MDS przekształcającego macierz odległości na listę współrzędnych.
 
 ```
 $ python src/test_MDS.py
@@ -35,7 +35,20 @@ $ python images/draw_TSP.py
 Dane z nazwami plików powinny być przekazane do klasy DataLoader w celu wydobycia z nich potrzebnych danych.
 
 Parametry algorytmu symulowanego wyżarzania są podawana poprzez zmienne przy tworzeniu klasy SimulatedAnnealing.
-<br><br>
+
+# Testy jednostkowe
+
+Uruchomienie testów jednostkowych dla wszystkich operacji modyfikujących rozwiązanie problemu komiwojażera.
+
+```
+$ python src/test_operations.py
+```
+
+Uruchomienie testów jednostkowych dla klasy DataLoader.
+
+```
+$ python src/test_data_loader.py
+```
 
 # Kwantowe wyżarzanie
 Poniższy program jest zapożyczony z innego repozytorium: https://github.com/pifparfait/GPS

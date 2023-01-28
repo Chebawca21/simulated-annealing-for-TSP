@@ -32,13 +32,13 @@ Uruchomienie generacji rysunków zdjęć, które zostały wykorzystane w pracy.
 $ python images/draw_TSP.py
 ```
 
-Dane z nzawami plików powinny być przekazane do klasy DataLoader w celu wydobycia z nich potrzebnych danych.
+Dane z nazwami plików powinny być przekazane do klasy DataLoader w celu wydobycia z nich potrzebnych danych.
 
 Parametry algorytmu symulowanego wyżarzania są podawana poprzez zmienne przy tworzeniu klasy SimulatedAnnealing.
 <br><br>
 
 # Kwantowe wyżarzanie
-Poniższy program jest zaporzyczony z innego repozytorium: https://github.com/pifparfait/GPS
+Poniższy program jest zapożyczony z innego repozytorium: https://github.com/pifparfait/GPS
 <br>
 Oryginalny autor kodu: Parfait Atchadé
 ```

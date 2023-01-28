@@ -14,6 +14,7 @@ if __name__ == '__main__':
 
     file = open("conf/train_multiple.json")
     data = json.load(file)
+    file.close()
 
     dls.append(DataLoader(data['graph1']['fileName'], data['graph1']['solFileName']))
     dls.append(DataLoader(data['graph2']['fileName'], data['graph2']['solFileName']))

@@ -20,6 +20,7 @@ def distance(p1, p2):
 if __name__ == '__main__':
     file = open("conf/train.json")
     data = json.load(file)
+    file.close()
 
     dl = DataLoader(data['fileName'], data['solFileName'])
     am = dl.getAdjencyMatrix()

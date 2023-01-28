@@ -1,20 +1,24 @@
 '''
 Run simulated annealing for the graphs specified in
-conf_train_multiple.json file.
+conf/train_multiple.json file.
 '''
 
 from simulated_annealing import SimulatedAnnealing
 from data_loader import DataLoader
+import json
 
 if __name__ == '__main__':
     N = 5
     dls = []
     sas = []
 
-    dls.append(DataLoader("data/FHCPCS/graph1.hcp", "data/FHCPCS_sols/graph1.hcp.tou"))
-    dls.append(DataLoader("data/FHCPCS/graph2.hcp", "data/FHCPCS_sols/graph2.hcp.tou"))
-    dls.append(DataLoader("data/FHCPCS/graph12.hcp", "data/FHCPCS_sols/graph12.hcp.tou"))
-    dls.append(DataLoader("data/FHCPCS/graph33.hcp", "data/FHCPCS_sols/graph33.hcp.tou"))
+    file = open("conf/train_multiple.json")
+    data = json.load(file)
+
+    dls.append(DataLoader(data['graph1']['fileName'], data['graph1']['solFileName']))
+    dls.append(DataLoader(data['graph2']['fileName'], data['graph2']['solFileName']))
+    dls.append(DataLoader(data['graph3']['fileName'], data['graph3']['solFileName']))
+    dls.append(DataLoader(data['graph4']['fileName'], data['graph4']['solFileName']))
 
     sas.append(SimulatedAnnealing(dls[0].getAdjencyMatrix(), dls[0].getRoute(), dls[0].getDim(), K=100000, t0=0.3, tMin=0.16, alpha=0.999995, draw=False, print=False))
     sas.append(SimulatedAnnealing(dls[1].getAdjencyMatrix(), dls[1].getRoute(), dls[1].getDim(), K=150000, t0=0.3, tMin=0.16, alpha=0.999995, draw=False, print=False))

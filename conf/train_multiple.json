@@ -1,0 +1,18 @@
+{
+   "graph1": {
+      "fileName": "data/FHCPCS/graph1.hcp",
+      "solFileName": "data/FHCPCS_sols/graph1.hcp.tou"
+   },
+   "graph2": {
+      "fileName": "data/FHCPCS/graph2.hcp",
+      "solFileName": "data/FHCPCS_sols/graph2.hcp.tou"
+   },
+   "graph3": {
+      "fileName": "data/FHCPCS/graph12.hcp",
+      "solFileName": "data/FHCPCS_sols/graph12.hcp.tou"
+   },
+   "graph4": {
+      "fileName": "data/FHCPCS/graph33.hcp",
+      "solFileName": "data/FHCPCS_sols/graph33.hcp.tou"
+   }
+}

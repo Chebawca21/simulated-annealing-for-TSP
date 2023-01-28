@@ -1,11 +1,12 @@
 '''
 Test accuracy of the MDS algorithm on the graph specified in
-conf_train.json file.
+conf/train.json file.
 '''
 
 from sklearn.manifold import MDS
 from math import sqrt
 from data_loader import DataLoader
+import json
 
 
 def distance(p1, p2):
@@ -17,7 +18,10 @@ def distance(p1, p2):
 
 
 if __name__ == '__main__':
-    dl = DataLoader("data/FHCPCS/graph1.hcp", "data/FHCPCS_sols/graph1.hcp.tou")
+    file = open("conf/train.json")
+    data = json.load(file)
+
+    dl = DataLoader(data['fileName'], data['solFileName'])
     am = dl.getAdjencyMatrix()
 
     model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
